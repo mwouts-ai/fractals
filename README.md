@@ -4,25 +4,25 @@ An interactive, browser-based fractal explorer built with HTML, CSS, and JavaScr
 
 [Open the explorer](https://mwouts.github.io/fractals/)
 
-## Screenshots
-
-[![Detail of the Mandelbrot set boundary at 144× zoom](docs/screenshots/mandelbrot-detail.png)](https://mwouts.github.io/fractals/#c=-0.745%2C0.186&m=-0.743643887037%2C0.131825904205%2C0.025&j=0%2C0%2C3.6&p=171f52-b77bf1-79f2bd&t=28&i=1024&f=0&family=mandelbrot&degree=3&memory=-0.5&nc=flow&lang=en&view=0)
-
-[![Detail of the convergence flow in a five-root Newton fractal](docs/screenshots/newton-detail.png)](https://mwouts.github.io/fractals/#c=0%2C0&m=0%2C0%2C1.6&j=0%2C0%2C1.2&p=171f52-b77bf1-79f2bd&t=24&i=512&f=0&family=newton&degree=5&memory=-0.5&nc=flow&lang=en&view=0)
-
-[![Detail of a Phoenix Julia set with repeating spiral structures](docs/screenshots/phoenix-detail.png)](https://mwouts.github.io/fractals/#c=0.56667%2C0&m=-0.5%2C0%2C3.6&j=0.35%2C0.7%2C1&p=30134d-ec6440-ffe9ac&t=24&i=1024&f=1&family=phoenix&degree=3&memory=-0.5&nc=flow&lang=en&view=1)
-
-Each screenshot links to its exact interactive view.
-
 ## Explore
 
 - Explore Mandelbrot and linked Julia sets, Burning Ship, Multibrot (degrees 2–8), Newton basins, and Phoenix fractals.
-- Click the parameter plane to update the linked dynamical view. Drag to pan, scroll or use the +/− buttons to zoom, and use the home button to reset a view.
+- Click the parameter plane to update the linked dynamical view. Drag to pan, Shift-drag with a mouse or pen to zoom into a selected area, scroll or use the +/− buttons to zoom, and use the home button to reset a view.
 - Focus a canvas and use the arrow keys to pan, +/− to zoom, or Enter in the parameter plane to select its center.
 - Customize palettes, color periods, and iteration limits; browse example scenes or enter full screen.
 - Export PNG images at 1920 or 3840 pixels wide, and share either both views or a single view by URL.
 - Keep bookmarks and the latest 30 history entries in your browser. Export/import JSON archives to transfer them between browsers.
 - Choose an interface language and follow references to Wikipedia, Wikidata, and Ultra Fractal.
+
+## Screenshots
+
+<a href="https://mwouts.github.io/fractals/#c=-0.745%2C0.186&amp;m=-0.743643887037%2C0.131825904205%2C0.025&amp;j=0%2C0%2C3.6&amp;p=171f52-b77bf1-79f2bd&amp;t=28&amp;i=1024&amp;f=0&amp;family=mandelbrot&amp;degree=3&amp;memory=-0.5&amp;nc=flow&amp;lang=en&amp;view=0"><img src="docs/screenshots/mandelbrot-detail.png" alt="Detail of the Mandelbrot set boundary at 144× zoom" width="720"></a>
+
+<a href="https://mwouts.github.io/fractals/#c=0%2C0&amp;m=0%2C0%2C1.6&amp;j=0%2C0%2C1.2&amp;p=171f52-b77bf1-79f2bd&amp;t=24&amp;i=512&amp;f=0&amp;family=newton&amp;degree=5&amp;memory=-0.5&amp;nc=flow&amp;lang=en&amp;view=0"><img src="docs/screenshots/newton-detail.png" alt="Detail of the convergence flow in a five-root Newton fractal" width="720"></a>
+
+<a href="https://mwouts.github.io/fractals/#c=0.56667%2C0&amp;m=-0.5%2C0%2C3.6&amp;j=0.35%2C0.7%2C1&amp;p=30134d-ec6440-ffe9ac&amp;t=24&amp;i=1024&amp;f=1&amp;family=phoenix&amp;degree=3&amp;memory=-0.5&amp;nc=flow&amp;lang=en&amp;view=1"><img src="docs/screenshots/phoenix-detail.png" alt="Detail of a Phoenix Julia set with repeating spiral structures" width="720"></a>
+
+Each screenshot links to its exact interactive view.
 
 ## Run locally
 
