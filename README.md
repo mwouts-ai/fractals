@@ -6,11 +6,13 @@ An interactive, browser-based fractal explorer built with HTML, CSS, and JavaScr
 
 ## Screenshots
 
-[![Mandelbrot and Julia sets in the Fractals explorer](docs/screenshots/mandelbrot-julia.png)](https://mwouts.github.io/fractals/#c=-0.745%2C0.186&m=-0.5%2C0%2C3.6&j=0%2C0%2C3.6&p=142c70-53cbd1-ffe1ab&t=60&i=512&f=2&family=mandelbrot&degree=3&memory=-0.5&nc=flow&lang=en)
+[![Detail of the Mandelbrot set boundary at 144× zoom](docs/screenshots/mandelbrot-detail.png)](https://mwouts.github.io/fractals/#c=-0.745%2C0.186&m=-0.743643887037%2C0.131825904205%2C0.025&j=0%2C0%2C3.6&p=171f52-b77bf1-79f2bd&t=28&i=1024&f=0&family=mandelbrot&degree=3&memory=-0.5&nc=flow&lang=en&view=0)
 
-[![A five-root Newton fractal in the Fractals explorer](docs/screenshots/newton.png)](https://mwouts.github.io/fractals/#c=0%2C0&m=0%2C0%2C3.6&j=0%2C0%2C1.2&p=142c70-53cbd1-ffe1ab&t=60&i=512&f=2&family=newton&degree=5&memory=-0.5&nc=flow&lang=en&view=0)
+[![Detail of the convergence flow in a five-root Newton fractal](docs/screenshots/newton-detail.png)](https://mwouts.github.io/fractals/#c=0%2C0&m=0%2C0%2C1.6&j=0%2C0%2C1.2&p=171f52-b77bf1-79f2bd&t=24&i=512&f=0&family=newton&degree=5&memory=-0.5&nc=flow&lang=en&view=0)
 
-[![Phoenix parameter and dynamical planes in the Fractals explorer](docs/screenshots/phoenix.png)](https://mwouts.github.io/fractals/#c=0.56667%2C0&m=-0.5%2C0%2C3.6&j=0%2C0%2C3.6&p=142c70-53cbd1-ffe1ab&t=60&i=512&f=2&family=phoenix&degree=5&memory=-0.5&nc=flow&lang=en)
+[![Detail of a Phoenix Julia set with repeating spiral structures](docs/screenshots/phoenix-detail.png)](https://mwouts.github.io/fractals/#c=0.56667%2C0&m=-0.5%2C0%2C3.6&j=0.35%2C0.7%2C1&p=30134d-ec6440-ffe9ac&t=24&i=1024&f=1&family=phoenix&degree=3&memory=-0.5&nc=flow&lang=en&view=1)
+
+Each screenshot links to its exact interactive view.
 
 ## Explore
 
