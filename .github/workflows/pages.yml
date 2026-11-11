@@ -34,6 +34,8 @@ jobs:
         run: |
           mkdir _site
           cp index.html LICENSE _site/
+          build=${GITHUB_SHA:0:12}
+          sed -i "s|</main>|<footer style='margin-top:1rem'><p><small>Build <a href='${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}'><code>${build}</code></a></small></p></footer></main>|" _site/index.html
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
