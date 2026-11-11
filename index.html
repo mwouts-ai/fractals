@@ -147,13 +147,15 @@ canvases.forEach((c,i)=>{
  const moveTouch=()=>{if(!touch||!contacts.size)return;const points=[...contacts.values()],a=points[0],b=points[1]||a,base=touch.base,x=(a.x+b.x)/2,y=(a.y+b.y)/2,distance=points.length>1?Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)):0; if(!touch.moved&&points.length===1&&Math.hypot(x-base.x,y-base.y)<=4)return;touch.moved=true;const span=Math.max(.00036,Math.min(20,base.v[2]*(base.distance&&distance?base.distance/distance:1))),anchor=position(base.x,base.y,base.v,base.r);state[k]=[anchor[0]-((x-base.r.left)/base.r.width-.5)*span,anchor[1]-(.5-(y-base.r.top)/base.r.height)*span/RATIO,span];preview()};
  const addTouch=(id,x,y)=>{if(contacts.has(id)||contacts.size>=2)return;if(!touch){flushHistory();renderers[i]?.dispose();lastRender[i]='';activeGestures.add(i);touch={moved:false,multi:false}}contacts.set(id,{x,y});if(contacts.size>1)touch.multi=true;baseline()};
  const endTouch=(ids,cancelled=false)=>{if(!touch)return;for(const id of ids)contacts.delete(id);if(cancelled)contacts.clear();if(contacts.size){baseline();return}const changed=touch.moved||touch.multi;if(!cancelled&&!changed&&i===0&&state.family!=='newton'){state.c=position(touch.base.x,touch.base.y,state[k],touch.base.r);notice('linked')}touch=null;activeGestures.delete(i);change(i,changed||(!cancelled&&i===0&&state.family!=='newton'))};
+ const traceTouch=phase=>globalThis.fractalTouchTrace?.(i?'Julia':'Mandelbrot',phase,'contacts='+contacts.size+' span='+state[k][2].toPrecision(6));
  if(nativeTouch){
   for(const type of ['touchstart','touchmove','touchend','touchcancel'])plane.addEventListener(type,e=>{
-   if(!touch&&type!=='touchstart')return;if(e.target.closest('button'))return;if(e.cancelable)e.preventDefault();
+   if(!touch&&type!=='touchstart'){traceTouch(type+' ignored without active gesture');return}if(e.target.closest('button')){traceTouch(type+' ignored on button');return}if(e.cancelable)e.preventDefault();
    for(const t of Array.from(e.touches))if(contacts.has(t.identifier))contacts.set(t.identifier,{x:t.clientX,y:t.clientY});
    if(type==='touchstart'){for(const t of Array.from(e.changedTouches))addTouch(t.identifier,t.clientX,t.clientY)}
    else if(type==='touchmove')moveTouch();
    else {for(const t of Array.from(e.changedTouches))if(contacts.has(t.identifier))contacts.set(t.identifier,{x:t.clientX,y:t.clientY});if(type==='touchend')moveTouch();endTouch(Array.from(e.changedTouches,t=>t.identifier),type==='touchcancel')}
+   traceTouch(type);
   },{passive:false});
   for(const type of ['gesturestart','gesturechange','gestureend'])plane.addEventListener(type,e=>{if(e.cancelable)e.preventDefault()},{passive:false});
  }
@@ -240,6 +242,43 @@ function mergeEntries(incoming,current){const seen=new Set();return [...incoming
 $('exportArchive').onclick=()=>{flushHistory();const text=JSON.stringify({format:'fractals-exploration',version:1,history,saved},null,2),url=URL.createObjectURL(new Blob([text],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='fractals-exploration.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);notice('archiveExported')};
 $('importArchive').onclick=()=>$('archiveFile').click();
 $('archiveFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>2000000)throw Error('size');const incoming=parseArchive(await file.text());flushHistory();history=mergeEntries(incoming.history,history).sort((a,b)=>b.at-a.at).slice(0,30);saved=mergeEntries(incoming.saved,saved);storeLists();showList('history',history);showList('saved',saved);notice(storageOK?'archiveImported':'storage')}catch{notice('archiveError')}finally{e.target.value=''}};
+
+
+if(new URLSearchParams(location.search).has('touch-debug')){
+ const panel=document.createElement('details');
+ panel.open=true;
+ panel.className='history';
+ panel.innerHTML='<summary>Touch diagnostics</summary><p>Try one pinch on Mandelbrot and one on Julia, then copy the trace.</p><button type="button">Copy trace</button> <button type="button">Clear</button><br><textarea readonly rows="10" aria-label="Touch trace" style="width:100%;margin-top:8px"></textarea>';
+ document.querySelector('main').append(panel);
+ const output=panel.querySelector('textarea'),[copy,clear]=panel.querySelectorAll('button');
+ const lines=[],lastMove=new Map();
+ const started=performance.now();
+ const trace=(channel,phase,data)=>{
+  const now=performance.now(),key=channel+':'+phase;
+  if(phase.endsWith('move')){
+   if(now-(lastMove.get(key)??-Infinity)<140)return;
+   lastMove.set(key,now);
+  }
+  lines.push(Math.round(now-started)+'ms '+channel+' '+phase+' '+data);
+  if(lines.length>100)lines.shift();
+  output.value=lines.join('\n');
+ };
+ globalThis.fractalTouchTrace=trace;
+ const label=target=>target?.id||target?.tagName||'?';
+ for(const type of ['touchstart','touchmove','touchend','touchcancel','gesturestart','gesturechange','gestureend']){
+  document.addEventListener(type,event=>{
+   if(panel.contains(event.target))return;
+   const scene=event.target.closest?.('.scene')?.id||'outside';
+   const touches=Array.from(event.touches||[],t=>t.identifier+'@'+label(t.target)).join(',');
+   const changed=Array.from(event.changedTouches||[],t=>t.identifier+'@'+label(t.target)).join(',');
+   trace('Safari '+scene,type,'target='+label(event.target)+' active=['+touches+'] changed=['+changed+'] pageScale='+visualViewport?.scale);
+  },{capture:true,passive:true});
+ }
+ window.addEventListener('error',event=>{if(event.message)trace('Page','error',event.message)});
+ copy.onclick=async()=>{try{await navigator.clipboard.writeText(output.value);copy.textContent='Copied'}catch{output.select();copy.textContent='Select and copy'}};
+ clear.onclick=()=>{lines.length=0;lastMove.clear();output.value='';copy.textContent='Copy trace'};
+ trace('Page','ready','nativeTouch='+('ontouchstart' in window)+' Mandelbrot span='+state.m[2]+' Julia span='+state.j[2]);
+}
 
 </script></body></html>
 
