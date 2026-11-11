@@ -20,10 +20,10 @@ assert.ok(Math.abs(state.m[0]+.24)<1e-12);assert.ok(Math.abs(state.m[1]-.075)<1e
 canvas.onpointerdown(event(1,300,300));canvas.onpointercancel(event(1,300,300));assert.equal(sandbox.activeGestures.size,0);
 console.log('PASS: pinch scale, translated anchor, remaining-finger pan, stable Julia parameter, cancellation');
 // Native iPad-style Touch Events: two fingers arrive/move/end together.
-const listeners={};plane.addEventListener=(type,handler)=>listeners[type]=handler;
+const listeners={};plane.addEventListener=()=>{};plane.contains=target=>target===canvas;canvas.closest=()=>null;sandbox.document.addEventListener=(type,handler)=>listeners[type]=handler;
 sandbox.window={ontouchstart:null};state.m=[0,0,3.6];
 vm.runInNewContext(code,sandbox);
-const t=(identifier,clientX,clientY)=>({identifier,clientX,clientY});
+const t=(identifier,clientX,clientY)=>({identifier,clientX,clientY,target:canvas});
 let prevented=0;const touch=(type,current,changed)=>listeners[type]({touches:current,changedTouches:changed,cancelable:true,preventDefault(){prevented++}});
 const initial=[t(1,300,300),t(2,500,300)],spread=[t(1,200,300),t(2,600,300)];
 // Duplicate browser pointer events must not start a second gesture.
@@ -32,3 +32,12 @@ touch('touchstart',initial,initial);touch('touchmove',spread,spread);touch('touc
 assert.equal(state.m[2],1.8);assert.equal(state.m[0],0);assert.deepEqual(state.c,[.2,.3]);assert.equal(sandbox.activeGestures.size,0);assert.equal(prevented,3);
 touch('touchstart',initial,initial);touch('touchcancel',[],initial);assert.equal(sandbox.activeGestures.size,0);
 console.log('PASS: native touch pinch, simultaneous release, pointer deduplication, default prevention and cancellation');
+
+// Recover a second contact whose touchstart did not reach the viewport.
+state.m=[0,0,3.6];
+touch('touchstart',[initial[0]],[initial[0]]);
+touch('touchmove',initial,[initial[1]]);
+touch('touchmove',spread,spread);
+touch('touchend',[],spread);
+assert.equal(state.m[2],1.8);assert.deepEqual(state.c,[.2,.3]);assert.equal(sandbox.activeGestures.size,0);
+console.log('PASS: recover missing second touchstart from full touch list');
