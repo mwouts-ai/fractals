@@ -7,7 +7,7 @@ An interactive, browser-based fractal explorer built with HTML, CSS, and JavaScr
 ## Explore
 
 - Explore Mandelbrot and linked Julia sets, Burning Ship, Multibrot (degrees 2–8), Newton basins, and Phoenix fractals.
-- Click the parameter plane to update the linked dynamical view. Drag with a mouse or pen to select an area and zoom into it; Shift-drag or touch-drag to pan. You can also scroll or use the +/− buttons to zoom, and use the home button to reset a view.
+- Click the parameter plane to update the linked dynamical view. Drag with a mouse or pen to select an area and zoom into it; Shift-drag to pan. On touch devices, drag to pan and pinch to zoom. You can also scroll or use the +/− buttons to zoom, and use the home button to reset a view.
 - Focus a canvas and use the arrow keys to pan, +/− to zoom, or Enter in the parameter plane to select its center.
 - Customize palettes, color periods, and iteration limits; browse example scenes or enter full screen.
 - Export PNG images at 1920 or 3840 pixels wide, and share either both views or a single view by URL.
