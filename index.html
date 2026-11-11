@@ -160,14 +160,23 @@ canvases.forEach((c,i)=>{
   for(const name of ['onpointerdown','onpointermove','onpointerup','onpointercancel']){
    const handler=c[name];c[name]=e=>{if(e.pointerType!=='touch')handler(e)};
   }
-  for(const type of Object.keys(handlers))plane.addEventListener(type,e=>{
+  const asPointer=t=>({pointerType:'touch',pointerId:t.identifier,clientX:t.clientX,clientY:t.clientY,fromTouch:true,preventDefault(){}});
+  for(const type of Object.keys(handlers))document.addEventListener(type,e=>{
+   const r=plane.getBoundingClientRect();
+   const inViewport=t=>t.clientX>=r.left&&t.clientX<=r.left+r.width&&t.clientY>=r.top&&t.clientY<=r.top+r.height;
+   // A second contact can target a different element after the image moves.
+   // Recover it from the complete touch list, not only a bubbled touchstart.
+   if(!touches.size&&(type!=='touchstart'||!Array.from(e.changedTouches).some(t=>plane.contains(t.target)&&!t.target.closest('button')&&inViewport(t))))return;
    if(e.cancelable)e.preventDefault();
-   // Refresh both coordinates together before evaluating a pinch or release.
-   for(const t of Array.from(e.touches))if(touches.has(t.identifier))touches.set(t.identifier,{x:t.clientX,y:t.clientY});
-   for(const t of Array.from(e.changedTouches)){
-    handlers[type]({pointerType:'touch',pointerId:t.identifier,clientX:t.clientX,clientY:t.clientY,fromTouch:true,preventDefault(){}});
+   if(type==='touchcancel'){handlers.touchcancel(asPointer(e.changedTouches[0]||{identifier:-1}));return}
+   const current=Array.from(e.touches);
+   for(const t of current)if(touches.has(t.identifier))touches.set(t.identifier,{x:t.clientX,y:t.clientY});
+   for(const t of current)if(!touches.has(t.identifier)&&touches.size<2&&inViewport(t))handlers.touchstart(asPointer(t));
+   if(type==='touchmove'){
+    if(pinch)movePinch();else if(drag&&touches.size){const t=touches.values().next().value;movePan(t.x,t.y)}
    }
-  },{passive:false});
+   if(type==='touchend')for(const t of Array.from(e.changedTouches))if(touches.has(t.identifier))handlers.touchend(asPointer(t));
+  },{passive:false,capture:true});
   for(const type of ['gesturestart','gesturechange','gestureend'])plane.addEventListener(type,e=>{if(e.cancelable)e.preventDefault()},{passive:false});
  }
  c.onkeydown=e=>{const v=state[k];if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','Enter'].includes(e.key))e.preventDefault();if(e.key==='+'||e.key==='=')zoom(i,.7);else if(e.key==='-')zoom(i,1/.7);else if(e.key.startsWith('Arrow')){v[0]+=(e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0)*v[2]*.1;v[1]+=(e.key==='ArrowUp'?1:e.key==='ArrowDown'?-1:0)*v[2]/RATIO*.1;change(i)}else if(e.key==='Enter'&&i===0&&state.family!=='newton'){flushHistory();state.c=v.slice(0,2);change(0);notice('linked')}};
